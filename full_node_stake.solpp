@@ -18,7 +18,7 @@ contract FullNodeStakeContract {
     message CancelSBPVoting();
 
     constructor() public {
-        send(voteAddr, VoteForSBP("Vite_SBP03"));
+        send(voteAddr, VoteForSBP("FullNodePool"));
         owner = msg.sender;
     }
 
