@@ -1,6 +1,6 @@
-# Vite-Contract
+# ViteLabs Contracts
 
-Solidity++ contracts on Vite blockchain.
+Solidity++ smart contracts deployed on Vite blockchain.
 
 ## LockToken Contract
 
