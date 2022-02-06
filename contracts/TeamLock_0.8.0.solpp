@@ -1,0 +1,94 @@
+// SPDX-License-Identifier: GPL-3.0
+pragma soliditypp ^0.8.0;
+
+contract TeamLock {
+    uint256 public nextTime = 1643644800; // start at Feb 1 2022, in seconds
+    uint256 public interval = 2592000; // 30 days in seconds
+    uint256 public endTime = 1704038400; // deadline is Jan 1 2024, in seconds
+    uint256 public unlockAmount = 1500000 vite; // unlock 1.5M per month
+    tti constant VITE = "tti_5649544520544f4b454e6e40"; // tti of VITE
+    uint8 constant MaxOwnerCount = 3; // there can only be a maximum of 3 owners
+    
+    address payable public benificiary;
+    mapping(address => bool) public owners;
+    uint8 public ownerCount;
+    bool public enabled;
+    
+    constructor(address initOwner, address payable _benificiary, uint256 _startTime, uint256 _endTime, uint256 _interval, uint256 _unlockAmount) {
+        benificiary = _benificiary;
+        // set initial owner
+        owners[initOwner] = true;
+        ownerCount = 1;
+        enabled = true;
+        // only for test
+        if (_startTime > 0)
+            nextTime = _startTime;
+        if (_endTime > 0)
+            endTime = _endTime;
+        if (_interval > 0)
+            interval = _interval;
+        if (_unlockAmount > 0)
+            unlockAmount = _unlockAmount;
+    }
+
+    receive() external payable {
+        // don't accept any transfers if disabled
+        require(enabled);
+        // only accept VITE token
+        require(msg.token == VITE);
+    }
+
+    function setBenificiary(address payable _benificiary) external {
+        require(enabled); 
+        // owners only
+        require(owners[msg.sender]);
+
+        benificiary = _benificiary;
+    }
+
+    // Lock tokens permanently until a hard fork.
+    // Do NOT call this unless the owner's private key is compromised!
+    function disable() external {
+        // owners only
+        require(owners[msg.sender]);
+        enabled = false;
+    }
+
+    function unlock() external {
+        // lock permanently if disabled
+        require(enabled);
+
+        uint256 balanceLeft = balance(VITE);
+        require(balanceLeft > 0);
+
+        uint256 currentTime = block.timestamp;
+        // check deadline
+        if(currentTime > endTime) {
+            // unlock the remaining after deadline
+            benificiary.transfer(VITE, balanceLeft);
+            return;
+        }
+
+        // check regular unlock time
+        require(currentTime > nextTime);
+
+        // unlock monthly
+        require(unlockAmount <= balanceLeft);
+        benificiary.transfer(VITE, unlockAmount);
+
+        // set nextTime to next month
+        nextTime = nextTime + interval;
+    }
+
+    function addOwner(address newOwner) external {
+        require(enabled);
+        // owners only
+        require(owners[msg.sender]);
+        // must add a new address
+        require(!owners[newOwner]);
+        // there can only be a maximum of MaxOwnerCount owners
+        require(ownerCount < MaxOwnerCount);
+        owners[newOwner] = true;
+        ownerCount = ownerCount + 1;
+    }
+}

@@ -15,7 +15,7 @@ describe('TeamLock Normal Case', () => {
 
   it('test contract in normal case', async () => {
     // compile contract
-    const compiledContracts = await vite.compileLegacy('TeamLock.solpp');
+    const compiledContracts = await vite.compileLegacy('TeamLock_0.4.3.solpp');
     expect(compiledContracts).to.have.property('TeamLock');
 
     // init user accounts

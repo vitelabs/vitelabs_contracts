@@ -1,7 +1,7 @@
 {
   "extension": ["ts"],
-  "spec": "./test/**/*.spec.ts",
+  "spec": "./test/TeamLock0.8.0/*.spec.ts",
   "require": "ts-node/register, ./test/fixture.beta.ts",
-  "slow": 10000,
+  "slow": 100000,
   "timeout": 120000
 }

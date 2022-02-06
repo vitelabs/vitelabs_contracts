@@ -4,11 +4,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "npm run test-on-nightly",
-    "test-on-release": "./node_modules/.bin/mocha --config ./test/mocharc.release.json",
-    "test-on-beta": "./node_modules/.bin/mocha --config ./test/mocharc.beta.json",
-    "test-on-nightly": "./node_modules/.bin/mocha --config ./test/mocharc.nightly.json",
-    "run": "./node_modules/.bin/ts-node "
+    "test": "./node_modules/.bin/mocha --config ./test/mocharc.0.8.0.json",
+    "test-legacy": "./node_modules/.bin/mocha --config ./test/mocharc.0.4.3.json"
   },
   "author": "charles@vite.org",
   "license": "ISC",

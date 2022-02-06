@@ -15,7 +15,7 @@ describe('TeamLock in Emergency', () => {
 
   it('test contract in emergency', async () => {
     // compile contract
-    const compiledContracts = await vite.compileLegacy('TeamLock.solpp');
+    const compiledContracts = await vite.compile('TeamLock_0.8.0.solpp');
     expect(compiledContracts).to.have.property('TeamLock');
 
     // init user accounts
@@ -32,7 +32,7 @@ describe('TeamLock in Emergency', () => {
     teamLock.setDeployer(deployer).setProvider(provider);
 
     let startTime = Math.round(Date.now() / 1000); // now
-    let interval = 15; // in seconds
+    let interval = 20; // in seconds
     let endTime = startTime + interval * 2; // lock for 2 months
     let unlockAmount = 100;
 
@@ -54,9 +54,9 @@ describe('TeamLock in Emergency', () => {
     expect(await teamLock.balance()).to.be.equal('1000');
 
     // only owner can call disable()
-    expect(await teamLock.query('isOwner', [deployer.address])).to.be.deep.equal(['1']);
-    expect(await teamLock.query('isOwner', [user1.address])).to.be.deep.equal(['0']);
-    expect(await teamLock.query('isOwner', [user2.address])).to.be.deep.equal(['0']);
+    expect(await teamLock.query('owners', [deployer.address])).to.be.deep.equal(['1']);
+    expect(await teamLock.query('owners', [user1.address])).to.be.deep.equal(['0']);
+    expect(await teamLock.query('owners', [user2.address])).to.be.deep.equal(['0']);
     await teamLock.call('disable', [], {caller: user1}); // no effect
     await teamLock.call('disable', [], {caller: user2}); // no effect
 
@@ -78,7 +78,7 @@ describe('TeamLock in Emergency', () => {
     await teamLock.call('addOwner', [user2.address], {});
 
     // check owners
-    expect(await teamLock.query('isOwner', [user2.address])).to.be.deep.equal(['1']);
+    expect(await teamLock.query('owners', [user2.address])).to.be.deep.equal(['1']);
 
     // disable unlocking
     await teamLock.call('disable', [], {caller: user2});
@@ -96,7 +96,7 @@ describe('TeamLock in Emergency', () => {
     expect(await teamLock.balance()).to.be.equal('900');
 
     // check benificiary
-    expect(await teamLock.query('getBenificiary', [])).to.be.deep.equal([user1.address]);
+    expect(await teamLock.query('benificiary', [])).to.be.deep.equal([user1.address]);
 
     // wait for the next next month
     let nextNextMonth = async function() {
