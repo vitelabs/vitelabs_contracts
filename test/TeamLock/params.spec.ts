@@ -1,7 +1,6 @@
 import { describe } from "mocha";
 import { expect } from "chai";
-import * as compiler from "../../src/legacyCompiler";
-import * as vite from "../../src/vite";
+const vite = require('@vite/vuilder');
 import config from "../vite.config.json";
 
 let provider: any;
@@ -16,7 +15,7 @@ describe('TeamLock Constructor Params', () => {
 
   it('test contructor params', async () => {
     // compile contract
-    const compiledContracts = await compiler.compile('TeamLock.solpp');
+    const compiledContracts = await vite.compileLegacy('TeamLock.solpp');
     expect(compiledContracts).to.have.property('TeamLock');
 
     // deploy contract

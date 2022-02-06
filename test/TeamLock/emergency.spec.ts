@@ -1,8 +1,6 @@
 import { describe } from "mocha";
 import { expect } from "chai";
-import * as compiler from "../../src/legacyCompiler";
-import * as vite from "../../src/vite";
-import * as utils from "../../src/utils";
+const vite = require('@vite/vuilder');
 import config from "../vite.config.json";
 
 let provider: any;
@@ -17,7 +15,7 @@ describe('TeamLock in Emergency', () => {
 
   it('test contract in emergency', async () => {
     // compile contract
-    const compiledContracts = await compiler.compile('TeamLock.solpp');
+    const compiledContracts = await vite.compileLegacy('TeamLock.solpp');
     expect(compiledContracts).to.have.property('TeamLock');
 
     // init user accounts
@@ -89,7 +87,7 @@ describe('TeamLock in Emergency', () => {
     let nextMonth = async function() {
       return Date.now() / 1000 > startTime + interval;
     }
-    await utils.waitFor(nextMonth, 'Wait for the next month', 1000);
+    await vite.utils.waitFor(nextMonth, 'Wait for the next month', 1000);
 
     // unlock once again, should not unlock any tokens
     await teamLock.call('unlock', [], {});
@@ -104,7 +102,7 @@ describe('TeamLock in Emergency', () => {
     let nextNextMonth = async function() {
       return Date.now() / 1000 > startTime + interval * 2;
     }
-    await utils.waitFor(nextNextMonth, 'Wait for the next month', 1000);
+    await vite.utils.waitFor(nextNextMonth, 'Wait for the next month', 1000);
 
     // unlock once again, should not unlock any tokens
     await teamLock.call('unlock', [], {});

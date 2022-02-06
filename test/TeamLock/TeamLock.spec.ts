@@ -1,8 +1,6 @@
 import { describe } from "mocha";
 import { expect } from "chai";
-import * as compiler from "../../src/legacyCompiler";
-import * as vite from "../../src/vite";
-import * as utils from "../../src/utils";
+const vite = require('@vite/vuilder');
 import config from "../vite.config.json";
 
 let provider: any;
@@ -17,7 +15,7 @@ describe('TeamLock Normal Case', () => {
 
   it('test contract in normal case', async () => {
     // compile contract
-    const compiledContracts = await compiler.compile('TeamLock.solpp');
+    const compiledContracts = await vite.compileLegacy('TeamLock.solpp');
     expect(compiledContracts).to.have.property('TeamLock');
 
     // init user accounts
@@ -117,7 +115,7 @@ describe('TeamLock Normal Case', () => {
     let nextMonth = async function() {
       return Date.now() / 1000 > startTime + interval;
     }
-    await utils.waitFor(nextMonth, 'Wait for the next month', 1000);
+    await vite.utils.waitFor(nextMonth, 'Wait for the next month', 1000);
 
     // unlock once again, tokens should be transfered to the new benificiary
     await teamLock.call('unlock', [], {caller: user2});
@@ -129,7 +127,7 @@ describe('TeamLock Normal Case', () => {
     let nextNextMonth = async function() {
       return Date.now() / 1000 > startTime + interval * 2;
     }
-    await utils.waitFor(nextNextMonth, 'Wait for the next month', 1000);
+    await vite.utils.waitFor(nextNextMonth, 'Wait for the next month', 1000);
 
     // unlock once again, all remaining tokens should be transfered to the benificiary
     await teamLock.call('unlock', [], {caller: user2});
