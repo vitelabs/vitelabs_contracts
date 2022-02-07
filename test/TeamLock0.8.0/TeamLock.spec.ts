@@ -110,6 +110,17 @@ describe('TeamLock Normal Case', () => {
     expect(await teamLock.query('owners', [user2.address])).to.be.deep.equal(['1']);
     expect(await teamLock.query('owners', [user3.address])).to.be.deep.equal(['0']);
     expect(await teamLock.query('owners', [user4.address])).to.be.deep.equal(['0']);
+    // check owner count
+    expect(await teamLock.query('ownerCount', [])).to.be.deep.equal(['3']);
+
+    // renounce ownership
+    await teamLock.call('renounceOwner', [], {caller: user2});
+    // check owners
+    expect(await teamLock.query('owners', [deployer.address])).to.be.deep.equal(['1']);
+    expect(await teamLock.query('owners', [user1.address])).to.be.deep.equal(['1']);
+    expect(await teamLock.query('owners', [user2.address])).to.be.deep.equal(['0']);
+    // check owner count
+    expect(await teamLock.query('ownerCount', [])).to.be.deep.equal(['2']);
 
     // wait for the next month
     let nextMonth = async function() {

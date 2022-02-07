@@ -26,6 +26,6 @@
     "typescript": "^4.0.2"
   },
   "dependencies": {
-    "@vite/vuilder": "^0.1.0-alpha.4"
+    "@vite/vuilder": "^0.1.0-alpha.5"
   }
 }

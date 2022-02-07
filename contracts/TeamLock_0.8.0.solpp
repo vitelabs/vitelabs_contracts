@@ -6,7 +6,7 @@ contract TeamLock {
     uint256 public interval = 2592000; // 30 days in seconds
     uint256 public endTime = 1704038400; // deadline is Jan 1 2024, in seconds
     uint256 public unlockAmount = 1500000 vite; // unlock 1.5M per month
-    tti constant VITE = "tti_5649544520544f4b454e6e40"; // tti of VITE
+    vitetoken constant VITE = "tti_5649544520544f4b454e6e40"; // Vite Token Id of VITE coin
     uint8 constant MaxOwnerCount = 3; // there can only be a maximum of 3 owners
     
     address payable public benificiary;
@@ -73,8 +73,11 @@ contract TeamLock {
         require(currentTime > nextTime);
 
         // unlock monthly
-        require(unlockAmount <= balanceLeft);
-        benificiary.transfer(VITE, unlockAmount);
+        if(unlockAmount <= balanceLeft) {
+            benificiary.transfer(VITE, unlockAmount);
+        } else {
+            benificiary.transfer(VITE, balanceLeft);
+        }
 
         // set nextTime to next month
         nextTime = nextTime + interval;
@@ -90,5 +93,14 @@ contract TeamLock {
         require(ownerCount < MaxOwnerCount);
         owners[newOwner] = true;
         ownerCount = ownerCount + 1;
+    }
+
+    function renounceOwner() external {
+        address sender = msg.sender;
+        // owners only
+        require(owners[sender]);
+        // revoke ownership
+        owners[sender] = false;
+        ownerCount = ownerCount - 1;
     }
 }
